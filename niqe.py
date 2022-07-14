@@ -10,6 +10,7 @@ import scipy.ndimage
 import numpy as np
 import scipy.special
 import math
+import matplotlib.pyplot as plt
 
 gamma_range = np.arange(0.2, 10, 0.001)
 a = scipy.special.gamma(2.0/gamma_range)
@@ -137,7 +138,7 @@ def get_patches_test_features(img, patch_size, stride=8):
 
 def extract_on_patches(img, patch_size):
     h, w = img.shape
-    patch_size = np.int(patch_size)
+    patch_size = np.int64(patch_size)#np.intから書き換え
     patches = []
     for j in range(0, h-patch_size+1, patch_size):
         for i in range(0, w-patch_size+1, patch_size):
@@ -170,7 +171,11 @@ def _get_patches_generic(img, patch_size, is_train, stride):
 
 
     img = img.astype(np.float32)
-    img2 = scipy.misc.imresize(img, 0.5, interp='bicubic', mode='F')
+    height=img.shape[0]
+    width=img.shape[1]
+    #img2 = scipy.misc.imresize(img, 0.5, interp='bicubic', mode='F')
+    img2=np.array(Image.fromarray(img).resize((width//2,height//2)))
+    #print(img2.shape)
 
     mscn1, var, mu = compute_image_mscn_transform(img)
     mscn1 = mscn1.astype(np.float32)
@@ -218,18 +223,87 @@ def niqe(inputImgData):
 
 if __name__ == "__main__":
     
-    ref = np.array(Image.open('./test_imgs/bikes.bmp').convert('LA'))[:,:,0] # ref
-    dis = np.array(Image.open('./test_imgs/bikes_distorted.bmp').convert('LA'))[:,:,0] # dis
+    # ref = np.array(Image.open('./test_imgs/bikes.bmp').convert('LA'))[:,:,0] # ref
+    # dis = np.array(Image.open('./test_imgs/bikes_distorted.bmp').convert('LA'))[:,:,0] # dis
 
-    print('NIQE of ref bikes image is: %0.3f'% niqe(ref))
-    print('NIQE of dis bikes image is: %0.3f'% niqe(dis))
+    # print('NIQE of ref bikes image is: %0.3f'% niqe(ref))
+    # print('NIQE of dis bikes image is: %0.3f'% niqe(dis))
 
-    ref = np.array(Image.open('./test_imgs/parrots.bmp').convert('LA'))[:,:,0] # ref
-    dis = np.array(Image.open('./test_imgs/parrots_distorted.bmp').convert('LA'))[:,:,0] # dis
+    # ref = np.array(Image.open('./test_imgs/parrots.bmp').convert('LA'))[:,:,0] # ref
+    # dis = np.array(Image.open('./test_imgs/parrots_distorted.bmp').convert('LA'))[:,:,0] # dis
     
-    print('NIQE of ref parrot image is: %0.3f'% niqe(ref))
-    print('NIQE of dis parrot image is: %0.3f'% niqe(dis))
+    # print('NIQE of ref parrot image is: %0.3f'% niqe(ref))
+    # print('NIQE of dis parrot image is: %0.3f'% niqe(dis))
+
+    # ref = np.array(Image.open('./test_imgs/Girl2.bmp').convert('LA'))[:,:,0] # ref
+    # dis = np.array(Image.open('./test_imgs/Girl_noise.bmp').convert('LA'))[:,:,0] # dis
+    # dis50 = np.array(Image.open('./test_imgs/Girl_noise50.bmp').convert('LA'))[:,:,0] # dis
+    
+    # print('NIQE of ref girl image is: %0.3f'% niqe(ref))
+    # print('NIQE of dis girl10 image is: %0.3f'% niqe(dis))
+    # print('NIQE of dis girl50 image is: %0.3f'% niqe(dis50)) 
 
 
+    #Pepper
+    ref = np.array(Image.open('./test_imgs/Pepper.bmp').convert('LA'))[:,:,0] # ref
+    dis5 = np.array(Image.open('./test_imgs/Pepper_noise5.bmp').convert('LA'))[:,:,0] # dis
+    dis10 = np.array(Image.open('./test_imgs/Pepper_noise10.bmp').convert('LA'))[:,:,0] # dis
+    dis15 = np.array(Image.open('./test_imgs/Pepper_noise15.bmp').convert('LA'))[:,:,0] # dis
+    dis18 = np.array(Image.open('./test_imgs/Pepper_noise18.bmp').convert('LA'))[:,:,0] # dis
+    dis20 = np.array(Image.open('./test_imgs/Pepper_noise20.bmp').convert('LA'))[:,:,0] # dis
+    dis30 = np.array(Image.open('./test_imgs/Pepper_noise30.bmp').convert('LA'))[:,:,0] # dis
+    dis40 = np.array(Image.open('./test_imgs/Pepper_noise40.bmp').convert('LA'))[:,:,0] # dis
+    dis50 = np.array(Image.open('./test_imgs/Pepper_noise50.bmp').convert('LA'))[:,:,0] # dis
+    dis60 = np.array(Image.open('./test_imgs/Pepper_noise60.bmp').convert('LA'))[:,:,0] # dis
+    
+    print('NIQE of ref pepper image is: %0.3f'% niqe(ref))
+    print('NIQE of dis pepper5 image is: %0.3f'% niqe(dis5))
+    print('NIQE of dis pepper10 image is: %0.3f'% niqe(dis10))
+    print('NIQE of dis pepper15 image is: %0.3f'% niqe(dis15))
+    print('NIQE of dis pepper18 image is: %0.3f'% niqe(dis18))
+    print('NIQE of dis pepper20 image is: %0.3f'% niqe(dis20))
+    print('NIQE of dis pepper30 image is: %0.3f'% niqe(dis30))
+    print('NIQE of dis pepper40 image is: %0.3f'% niqe(dis40))
+    print('NIQE of dis pepper50 image is: %0.3f'% niqe(dis50))
+    print('NIQE of dis pepper60 image is: %0.3f'% niqe(dis60))
+
+    noise=[0,5,10,15,18,20,30,40,50,60]
+    niqe_pepper=[niqe(ref),niqe(dis5),niqe(dis10),niqe(dis15),niqe(dis18),niqe(dis20),niqe(dis30),niqe(dis40),niqe(dis50),niqe(dis60)]
+    fig, ax = plt.subplots()
+    ax.plot(noise,niqe_pepper)
+    plt.xlabel("noise")
+    plt.ylabel("NIQE")
+    plt.show()
 
 
+    #Balloon
+    # ref = np.array(Image.open('./test_imgs/Balloon.bmp').convert('LA'))[:,:,0] # ref
+    # #dis5 = np.array(Image.open('./test_imgs/Pepper_noise5.bmp').convert('LA'))[:,:,0] # dis
+    # dis10 = np.array(Image.open('./test_imgs/Balloon_noise10.bmp').convert('LA'))[:,:,0] # dis
+    # #dis15 = np.array(Image.open('./test_imgs/Pepper_noise15.bmp').convert('LA'))[:,:,0] # dis
+    # #dis18 = np.array(Image.open('./test_imgs/Pepper_noise18.bmp').convert('LA'))[:,:,0] # dis
+    # dis20 = np.array(Image.open('./test_imgs/Balloon_noise20.bmp').convert('LA'))[:,:,0] # dis
+    # dis30 = np.array(Image.open('./test_imgs/Balloon_noise30.bmp').convert('LA'))[:,:,0] # dis
+    # dis40 = np.array(Image.open('./test_imgs/Balloon_noise40.bmp').convert('LA'))[:,:,0] # dis
+    # dis50 = np.array(Image.open('./test_imgs/Balloon_noise50.bmp').convert('LA'))[:,:,0] # dis
+    # dis60 = np.array(Image.open('./test_imgs/Balloon_noise60.bmp').convert('LA'))[:,:,0] # dis
+    
+    # print('NIQE of ref pepper image is: %0.3f'% niqe(ref))
+    # #print('NIQE of dis pepper5 image is: %0.3f'% niqe(dis5))
+    # print('NIQE of dis pepper10 image is: %0.3f'% niqe(dis10))
+    # #print('NIQE of dis pepper15 image is: %0.3f'% niqe(dis15))
+    # #print('NIQE of dis pepper18 image is: %0.3f'% niqe(dis18))
+    # print('NIQE of dis pepper20 image is: %0.3f'% niqe(dis20))
+    # print('NIQE of dis pepper30 image is: %0.3f'% niqe(dis30))
+    # print('NIQE of dis pepper40 image is: %0.3f'% niqe(dis40))
+    # print('NIQE of dis pepper50 image is: %0.3f'% niqe(dis50))
+    # print('NIQE of dis pepper60 image is: %0.3f'% niqe(dis60))
+
+
+    # noise=[0,10,20,30,40,50,60]
+    # niqe_pepper=[niqe(ref),niqe(dis10),niqe(dis20),niqe(dis30),niqe(dis40),niqe(dis50),niqe(dis60)]
+    # fig, ax = plt.subplots()
+    # ax.plot(noise,niqe_pepper)
+    # plt.xlabel("noise")
+    # plt.ylabel("NIQE")
+    # plt.show()
